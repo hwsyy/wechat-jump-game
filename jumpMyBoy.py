@@ -4,9 +4,13 @@ from PIL import Image, ImageTk
 import os
 import sys
 import Tkinter
+import time
+
 
 pointOne = None
 pointTwo = None
+pointName = None
+
 window = Tkinter.Tk()
 window.title("Jump My Boy")
 window.resizable(width=True,height=True)
@@ -32,34 +36,6 @@ photo=getImage()
 imglabel = Tkinter.Label(window, image=photo, width = 350, heigh = 620)
 imglabel.pack(side = Tkinter.RIGHT)
 
-val = Tkinter.StringVar()
-def radcall():
-    global val
-    log('***************select****************')
-    log("selected point name:" + val.get())
-r1 = Tkinter.Radiobutton(window, text = "one", variable = val, value = "one", command = radcall)
-r1.place(x = 100, y = 10)
-r2 = Tkinter.Radiobutton(window, text = "two", variable = val, value = "two", command = radcall)
-r2.place(x = 200, y = 10)
-
-def pressThree(e):
-    log('***************point****************')
-    global pointOne
-    global pointTwo
-    global val
-    if val.get() == 'one':
-        pointOne = e
-        pass
-    elif val.get() == 'two':
-        pointTwo = e
-        pass
-    else:
-        log('please select point name ...')
-        return
-    log("setPoint:" + val.get())
-    log("value:" + str(e.x) + "," + str(e.y))
-    pass
-window.bind('<Button-3>',pressThree)
 
 def pullFunc():
     global png
@@ -67,7 +43,7 @@ def pullFunc():
     global imglabel
     global pointOne
     global pointTwo
-    global val
+    global pointName
     log('\n===============start================')
     log('***************pull****************')
     log('taking the picture ...')
@@ -79,9 +55,12 @@ def pullFunc():
     photo=getImage()
     imglabel['image'] = photo
     imglabel.pack(side = Tkinter.RIGHT)
-    # clear
-    pointOne == None
-    pointTwo == None
+    # set point one
+    pointOne = None
+    pointTwo = None
+    pointName = 'one'
+    log('click point one ...')
+
 pullBtn = Tkinter.Button(window,command = pullFunc, text = 'pull', width = 5)
 pullBtn.place(x = 100, y = 580)
 
@@ -89,8 +68,8 @@ def pushFunc():
     log('***************push****************')
     global pointOne
     global pointTwo
-    global val
-    if val == '' or pointOne == None or pointTwo == None:
+    global pointName
+    if pointName == None or pointOne == None or pointTwo == None:
         log('please set the points ...')
         return
         pass
@@ -100,18 +79,39 @@ def pushFunc():
     x2 = int(pointTwo.x)
     y2 = int(pointTwo.y)
     distance = ((x1 - x2) ** 2 + (y1 - y2) ** 2) ** 0.5
-    time = int(distance * 4.4)       
+    timeToJump = int(distance * 4.4)       
     log('distance:' + str(distance))
-    log('time:' + str(time))
-    os.system('adb shell input touchscreen swipe 200 200 200 200 ' + str(time))
-    pointOne == None
-    pointTwo == None
+    log('timeToJump:' + str(timeToJump))
+    os.system('adb shell input touchscreen swipe 200 200 200 200 ' + str(timeToJump))
+    pointOne = None
+    pointTwo = None
+    pointName = None
     log('===========end===============\n')
+    time.sleep(1)
+    pullFunc()
     pass
-pushBtn = Tkinter.Button(window,command = pushFunc, text = 'push', width = 5)
-pushBtn.place(x = 200, y = 580)
 
-
+def pressThree(e):
+    log('***************point****************')
+    global pointOne
+    global pointTwo
+    global pointName
+    if pointName == 'one':
+        pointOne = e
+    elif pointName == 'two':
+        pointTwo = e
+    else:
+        log('please pull the image ...')
+        return
+    log("setPoint:" + pointName)
+    log("value:" + str(e.x) + "," + str(e.y))
+    if pointTwo == None:
+        pointName = 'two'
+        log('click point two ...')
+    else:
+        pushFunc()
+        return
+window.bind('<Button-3>',pressThree)
  
 log('\nWelcome To Py Jump Game !\n')#END表示在末尾处插入 
 log('1. connect android with usb')
