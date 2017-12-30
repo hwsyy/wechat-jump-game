@@ -1,5 +1,6 @@
-# wechat-jump-game
-wechat jump game tool in python2
+## wechat-jump-game
+
+# 玩微信跳一跳游戏的脚本
 
 用到的库和软件
 
@@ -9,6 +10,7 @@ wechat jump game tool in python2
 * python Tkinter, os, sys, time
 
 使用方法
+
 
 1. connect android with usb
 
