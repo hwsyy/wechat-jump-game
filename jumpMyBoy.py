@@ -79,7 +79,7 @@ def pushFunc():
     x2 = int(pointTwo.x)
     y2 = int(pointTwo.y)
     distance = ((x1 - x2) ** 2 + (y1 - y2) ** 2) ** 0.5
-    timeToJump = int(distance * 4.4)       
+    timeToJump = int(distance * 4.5)       
     log('distance:' + str(distance))
     log('timeToJump:' + str(timeToJump))
     os.system('adb shell input touchscreen swipe 200 200 200 200 ' + str(timeToJump))
